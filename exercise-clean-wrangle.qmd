@@ -59,3 +59,31 @@ lobtraps <- unique(lobster_abund_clean[is.na(lobster_abund_clean$COUNT) == F, "S
 lobster_traps_subset <- lobster_traps[lobster_traps$SITE %in% lobtraps,]
 
 ```
+
+### exercise 4
+
+```{r}
+
+(lobster_abund_ply <- lobster_abund_clean %>%
+  group_by(SITE, YEAR) %>% summarize(total_count = sum(COUNT)))
+
+lobster_traps_ply <- lobster_traps %>% group_by(SITE, YEAR) %>% summarize(total_traps = sum(TRAPS))
+```
+
+### exercise 5
+
+```{r}
+
+lobster_abund_trap <- merge(lobster_abund_ply, lobster_traps_ply, by = c("SITE", "YEAR"), all = T)
+
+```
+
+### excersize 6
+
+```{r}
+
+(lobster_abund_trap <- lobster_abund_trap %>% mutate(MPA = case_when(SITE %in% c("IVEE", "NAPL") ~ "Y")))
+
+```
+
+### excersize 7
