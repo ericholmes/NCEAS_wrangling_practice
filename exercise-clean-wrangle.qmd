@@ -4,23 +4,58 @@ author: "ejh"
 format: html
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Load Libraries
 
 ```{r}
-1 + 1
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
 ```
 
-You can add options to executable code like this 
+## Read in the data
 
 ```{r}
-#| echo: false
-2 * 2
+# Read in data
+lobster_abundance <- read.csv("https://portal.edirepository.org/nis/dataviewer?packageid=knb-lter-sbc.77.8&entityid=f32823fba432f58f66c06b589b7efac6")
+
+lobster_traps <- read.csv("https://portal.edirepository.org/nis/dataviewer?packageid=knb-lter-sbc.77.8&entityid=66dd61c75bda17c23a3bce458c56ed84")
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+
+str(lobster_abundance)
+str(lobster_traps)
+
+```
+
+### exercise 1
+```{r}
+
+lobster_abundance$SIZE_MM < 0
+
+lobster_abund_clean <- lobster_abundance %>%
+  mutate(SIZE_MM = na_if(SIZE_MM, -99999))
+
+```
+
+### exercise 2 
+
+```{r}
+
+(lobster_abund_aque <- lobster_abund_clean %>% filter(SITE == "AQUE"))
+```
+
+### exercise 3
+
+```{r}
+head(lobster_traps)
+
+lobtraps <- unique(lobster_abund_clean[is.na(lobster_abund_clean$COUNT) == F, "SITE"])
+# sites with non-NA values
+
+lobster_traps_subset <- lobster_traps[lobster_traps$SITE %in% lobtraps,]
+
+```
